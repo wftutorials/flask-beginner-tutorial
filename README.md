@@ -87,7 +87,7 @@ First we need the `flask` request object.
 from flask import request
 ```
 
-Then we can add the function below `display_bookmarks`
+Then we can add the function below `display_bookmarks` to our `hello.py` file
 
 ```python
 @app.route("/bookmarks")
@@ -97,7 +97,7 @@ def display_bookmarks():
 ```
 
 To get the argument from our url we can use the request object
-and called `request.args.get()`. The results is shown below.
+and call `request.args.get()`. The results is shown below.
 
 [url_arguments.png]
 
@@ -109,7 +109,7 @@ When we learn how to do this we can create more complex layouts.
 In order to use templates we must create a folder called `templates`. 
 This is where flask looks for our `html` files.
 
-After we doo this we create a function called `index`.
+After we do this we create a function called `index`.
 
 ```python
 @app.route("/index")
@@ -143,7 +143,7 @@ Lets see the results.
 
 ## Passing data to our templates
 
-We can pass data to our templates so we an use them inside our html files.
+We can pass data to our templates so we can use them inside our html files.
 Lets see how. In our `index` function we created early we create an dictionary.
 
 ```python
@@ -239,7 +239,7 @@ def index():
     return render_template('index.html', data=data)
 ```
 
-Our full `index.html` can be found here
+Our full `index.html` can be found here -->
 
 --comment --
 # Rendering a list index.html
@@ -278,7 +278,7 @@ How? Lets see.
 </ul>
 ```
 
-We use the `dict.items()` function to loop our data. The results in
+We use the `dict.items()` function to loop our data. The results is shown below
 
 [looping_dictionary.png]
 
@@ -294,7 +294,7 @@ We add a loggedin variable in our dictionary.
 data = {'isloggedin': True}
 ```
 
-Now in our template we change conditionally render based on this.
+Now in our template we change conditionally render `html` based on this.
 
 ```html
 {% if data.isloggedin %}
@@ -321,7 +321,7 @@ Or we can add a else statement if our condition fails.
 # Working with forms
 
 Lets create a form and submit data. Let see how we can do this with flask.
-We will create a login form. Create a `login.html` in templates and add the
+We will create a login form. Create a `login.html` in the templates directory and add the
 content below.
 
 ```html
@@ -374,7 +374,7 @@ def login():
 Add the above code. Update your `login` route function to look like above.
 First thing we do is to check if the `request.method` is either post or get.
 If it is a POST we use the form data dictionary via `request.form` to get our
-parameters from the form.
+parameters from the form as shown below
 
 ```python
 return request.form["username"] + " + " + request.form["password"]
@@ -403,7 +403,7 @@ pip install flask-mysql
 ```
 
 Above we install `flask-mysql` you can learn more about it [here](https://flask-mysql.readthedocs.io/en/latest/).
-Now we load in into our app.
+Now lets go through the steps.
 
 First we import it 
 
@@ -531,7 +531,7 @@ def create_country():
     return render_template('create_country.html')
 ```
 
-Notice our route uses `/countires/create`. You can do this.
+Notice our route uses `/countries/create`. You can do this.
 
 [create_country_route.png]
 
@@ -555,7 +555,7 @@ def create_country():
 Above we check for the post request. Then we create our connection object
 and get a cursor. 
 
-After we call the `cursor.execute()` and pass in our `query` this will allow use to insert data into your database.
+After we call the `cursor.execute()` and pass in our `query` this will allow use to insert data into our database.
 If the request is not post we show our `create_country.html` form.
 
 Lets see the results below.
@@ -673,7 +673,7 @@ Now in our `create_country.html` we create our style link
 ```
 
 Notice our `url_for` function in double curly brackets. This creates the url path for our file.
-Now when we run the server we can see our results with out nicely styles form.
+Now when we run the server we can see our results with our nicely styles form.
 
 [styling_a_form.png]
 
@@ -754,7 +754,7 @@ from flask import jsonify
 
 # User Authentication
 
-How can we login and logout users. So we can secure your web application. Let see how.
+How can we login and logout users so we can secure your web application. Let see how.
 We are going to use the package `flask-login` you can learn more about it [here](https://flask-login.readthedocs.io/en/latest/#installation)
 
 First we need to install it via pip.
@@ -776,7 +776,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 ```
 
-We add our secret key because we are using session and flask requires this
+We add our secret key because we are using sessions and flask requires this
 
 ```python
 app = Flask(__name__)
@@ -888,7 +888,7 @@ def logout():
     return redirect('/')
 ```
 
-We use the `redirect` function send the user to a different route after
+We use the `redirect` function to send the user to a different route after
 logging out.
 
 The results can can be seen below.
@@ -897,5 +897,5 @@ The results can can be seen below.
 
 # Conclusion
 
-You have just complete a crash course in flask. You can now get started in building web applications.
+You have just completed a crash course in flask. You can now get started building web applications.
 There is alot more to learn. Thanks for taking the time to learn with wfTutorials.
