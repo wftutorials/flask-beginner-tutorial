@@ -536,3 +536,366 @@ Notice our route uses `/countires/create`. You can do this.
 [create_country_route.png]
 
 Next we want to check for `POST` requests.
+
+```python
+@app.route('/countries/create', methods=['POST', 'GET'])
+def create_country():
+    if request.method == "POST":
+        newCountry = request.form["country"]
+        query = "INSERT into countries(`country_name`) Values (%s)"
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(query, (newCountry,))
+        conn.commit()
+        return "Country created: " + newCountry
+    else:
+        return render_template('create_country.html')
+```
+
+Above we check for the post request. Then we create our connection object
+and get a cursor. 
+
+After we call the `cursor.execute()` and pass in our `query` this will allow use to insert data into your database.
+If the request is not post we show our `create_country.html` form.
+
+Lets see the results below.
+
+[adding_a_country.gif]
+
+This will add the country to our database.
+
+[added_country_indb.png]
+
+# Working with assets
+
+Lets add a css file to our app. First we create a folder called `static`.
+Then within the static folder we create a `main.css` file and we add some styles.
+Check them out here -->
+
+-- Comment --
+
+# Style for our main.css
+
+I got these styles via [sanwebe](https://www.sanwebe.com/2014/08/css-html-forms-designs). Great form styles.
+
+```css
+
+.form-style-1 {
+	margin:10px auto;
+	max-width: 400px;
+	padding: 20px 12px 10px 20px;
+	font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+.form-style-1 li {
+	padding: 0;
+	display: block;
+	list-style: none;
+	margin: 10px 0 0 0;
+}
+.form-style-1 label{
+	margin:0 0 3px 0;
+	padding:0px;
+	display:block;
+	font-weight: bold;
+}
+.form-style-1 input[type=text],
+.form-style-1 input[type=date],
+.form-style-1 input[type=datetime],
+.form-style-1 input[type=number],
+.form-style-1 input[type=search],
+.form-style-1 input[type=time],
+.form-style-1 input[type=url],
+.form-style-1 input[type=email],
+textarea,
+select{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	border:1px solid #BEBEBE;
+	padding: 7px;
+	margin:0px;
+	-webkit-transition: all 0.30s ease-in-out;
+	-moz-transition: all 0.30s ease-in-out;
+	-ms-transition: all 0.30s ease-in-out;
+	-o-transition: all 0.30s ease-in-out;
+	outline: none;
+}
+.form-style-1 input[type=text]:focus,
+.form-style-1 input[type=date]:focus,
+.form-style-1 input[type=datetime]:focus,
+.form-style-1 input[type=number]:focus,
+.form-style-1 input[type=search]:focus,
+.form-style-1 input[type=time]:focus,
+.form-style-1 input[type=url]:focus,
+.form-style-1 input[type=email]:focus,
+.form-style-1 textarea:focus,
+.form-style-1 select:focus{
+	-moz-box-shadow: 0 0 8px #88D5E9;
+	-webkit-box-shadow: 0 0 8px #88D5E9;
+	box-shadow: 0 0 8px #88D5E9;
+	border: 1px solid #88D5E9;
+}
+.form-style-1 .field-divided{
+	width: 49%;
+}
+
+.form-style-1 .field-long{
+	width: 100%;
+}
+.form-style-1 .field-select{
+	width: 100%;
+}
+.form-style-1 .field-textarea{
+	height: 100px;
+}
+.form-style-1 input[type=submit], .form-style-1 input[type=button]{
+	background: #4B99AD;
+	padding: 8px 15px 8px 15px;
+	border: none;
+	color: #fff;
+}
+.form-style-1 input[type=submit]:hover, .form-style-1 input[type=button]:hover{
+	background: #4691A4;
+	box-shadow:none;
+	-moz-box-shadow:none;
+	-webkit-box-shadow:none;
+}
+.form-style-1 .required{
+	color:red;
+}
+
+```
+
+Now in our `create_country.html` we create our style link
+
+```html
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}"/>
+```
+
+Notice our `url_for` function in double curly brackets. This creates the url path for our file.
+Now when we run the server we can see our results with out nicely styles form.
+
+[styling_a_form.png]
+
+## Adding Javascript assets
+
+You can do the same thing above for javascript files. Lets just try it.
+We create a file called `main.js` and add the content below
+
+```javascript
+document.getElementById('button').onclick = function changeContent() {
+
+    alert("clicked me")
+
+}
+```
+
+Now in our `countries.html` file we can add our `script`.
+
+```html
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+```
+
+Of course we need to add our button somewhere.
+
+```html
+<button id="button">Click me</button>
+```
+
+That is it. Lets see the results.
+
+[javascript_asset.gif]
+
+# Creating an API
+
+Lets create an api. First we create a function called `api`.
+Then we add the code below. 
+
+```python
+@app.route('/api/users', methods=['GET','POST'])
+def api():
+    if request.method == "GET":
+        query = "SELECT * from countries LIMIT 50"
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        data = cursor.fetchall()
+        return jsonify(data=data)
+    if request.method == "POST":
+        newCountry = request.form["country"]
+        query = "INSERT into countries(`country_name`) Values (%s)"
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(query, (newCountry,))
+        conn.commit()
+        return jsonify(results="Country created: " + newCountry)
+```
+
+Above we have one route - `/api/users`. Next we check for different
+type of requests. So for `GET` we return a list of countries.
+
+For `POST` we attempt to add a new country. We can test this with
+`POSTMAN`. Check out the results below
+
+Our `GET` request
+
+[api_get_request.png]
+
+Our `POST` request
+
+[add_country_via_api.png]
+
+Notice we are using `jsonify` to convert our cursor to json data. We can access jsonify from
+`flask`.
+
+```python
+from flask import jsonify
+```
+
+# User Authentication
+
+How can we login and logout users. So we can secure your web application. Let see how.
+We are going to use the package `flask-login` you can learn more about it [here](https://flask-login.readthedocs.io/en/latest/#installation)
+
+First we need to install it via pip.
+
+```bash
+pip install flask-login
+```
+
+Next we need some imports
+
+```python
+from flask_login import current_user, login_user, LoginManager, logout_user, login_required
+```
+
+Now we create a `loginManger` object and add it to our app object
+
+```python
+login_manager = LoginManager()
+login_manager.init_app(app)
+```
+
+We add our secret key because we are using session and flask requires this
+
+```python
+app = Flask(__name__)
+app.secret_key = "sasasdf2fb3443b4"
+```
+
+Now we create a user class with the required methods in it.
+View our user class here -->
+
+```python
+class User:
+    name = ""
+    password = ""
+    id = 0
+
+    def __init__(self, name="", password=""):
+        self.name = name
+        self.password = password
+
+    def is_authenticated(self):
+        query = "SELECT * from yii_users WHERE username=%s AND password=%s LIMIT 1"
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(query, (self.name, self.password))
+        data = cursor.fetchone()
+        if data is None:
+            return False
+        else:
+            self.id = data[0]
+            return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        if self.id == 0:
+            return True
+        else:
+            return False
+
+    def get_id(self):
+        return str(self.id).encode("utf-8").decode("utf-8")
+
+    @staticmethod
+    def get(user_id):
+        query = "SELECT * from yii_users WHERE id =%s LIMIT 1"
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute(query, (user_id,))
+        data = cursor.fetchone()
+        user = User()
+        user.id = user_id
+        user.name = data[1]
+        user.password = data[2]
+        return user
+```
+
+Finally we add a function to load our user model once the user is logged in.
+
+```python
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+```
+
+Now in our login function we can add the following code
+
+```python
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        name = request.form["username"]
+        password = request.form["password"]
+        user = User(name, password)
+        if user.is_authenticated():
+            login_user(user)
+            return "logged in good"
+        else:
+            return "log in not good"
+    else:
+        return render_template('login.html')
+
+```
+
+That is it. We can now log in as a user. In our `login.html` we add some code
+to tell the difference.
+
+```html
+<h3>Login Form</h3>
+{% if current_user.is_authenticated %}
+<p>user is logged in</p>
+<p>Hi {{ current_user.name }}!</p>
+{% else %}
+<form method="post">
+    <Label>Username: </Label><input type="text" name="username"/><br>
+    <label>Password: </label><input type="password" name="password"/><br>
+    <input type="submit"/>
+</form>
+{% endif %}
+```
+
+We also add a logout route.
+
+```python
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+```
+
+We use the `redirect` function send the user to a different route after
+logging out.
+
+The results can can be seen below.
+
+[log_in_log_out_example.gif]
+
+# Conclusion
+
+You have just complete a crash course in flask. You can now get started in building web applications.
+There is alot more to learn. Thanks for taking the time to learn with wfTutorials.
